@@ -1,0 +1,6 @@
+(set-logic AUFLIA)
+(declare-fun E (Int Int Int) Bool)
+(assert (forall ((x Int)) 
+            (exists ((y Int)) 
+                (forall ((z Int)) (E x y z)))))
+(check-sat)

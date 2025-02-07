@@ -1,0 +1,10 @@
+(set-logic AUFLIA)
+(declare-fun y () Int)
+(declare-fun H (Int Int) Bool)
+(assert (or 
+    (forall ((z Int)) 
+        (exists ((x Int)) 
+            (>= (* 2 x) (+ y z))))
+    (forall ((a Int) (b Int)) (H a b))
+))
+(check-sat)
