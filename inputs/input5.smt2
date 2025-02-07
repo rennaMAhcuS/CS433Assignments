@@ -1,0 +1,12 @@
+(set-logic AUFLIA)
+(declare-sort U 0)
+(declare-fun x () U)
+(declare-fun y () U)
+(declare-fun z () U)
+(declare-fun H (U U) Bool)
+(declare-fun G (U) Bool)
+(assert (forall ((x U)) (
+    => (exists ((y U)) (H x y))
+    (G x)
+)))
+(check-sat)
