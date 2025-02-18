@@ -72,15 +72,22 @@ def get_data(
 
 
 def plot_data(
-    filehash: str, param: str, param_range: range, memory: bool = False
+    filehashes: list[str], param: str, param_range: range, memory: bool = False
 ) -> None:
-    filehash_out1: list = get_data("31c4aac", param, param_range, memory=memory)
+    print("in plot data")
+    for filehash in filehashes:
+        print("here")
+        filehash_out1: list = get_data(filehash, param, param_range, memory=memory)
 
-    # Extract x and y coordinates from filehash_out1
-    x_vals = [point[0] for point in filehash_out1]
-    y_vals = [point[1] for point in filehash_out1]
+        # Extract x and y coordinates from filehash_out1
+        x_vals = [point[0] for point in filehash_out1]
+        y_vals = [point[1] for point in filehash_out1]
 
-    plt.step(x_vals, y_vals, where="post", marker="o")
+        plt.step(
+            x_vals, y_vals, where="post", marker="o", label=f"instance: {filehash}"
+        )
+
+    plt.legend()
     plt.xlabel(param)
     plt.ylabel("CPU Time Taken")
     plt.title(f"{param} vs {'memory' if memory else 'time'}")
@@ -105,9 +112,9 @@ def main() -> None:
             param_range = range(0, int(1e4), 100)
 
         print(f"{param}: MEMORY")
-        plot_data("31c4aac", param, param_range, memory=True)
+        plot_data(["31c4aac", "3a81b9d"], param, param_range, memory=True)
         print(f"{param}: TIME")
-        plot_data("31c4aac", param, param_range, memory=False)
+        plot_data(["31c4aac", "3a81b9d"], param, param_range, memory=False)
 
 
 if __name__ == "__main__":
