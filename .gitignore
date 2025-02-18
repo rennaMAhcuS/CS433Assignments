@@ -169,3 +169,11 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+A2/benchmarks/
+
+# macOS
+.DS_Store
+
+# WSL
+*Zone.Identifier
