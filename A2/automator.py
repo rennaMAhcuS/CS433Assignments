@@ -74,9 +74,7 @@ def get_data(
 def plot_data(
     filehashes: list[str], param: str, param_range: range, memory: bool = False
 ) -> None:
-    print("in plot data")
     for filehash in filehashes:
-        print("here")
         filehash_out1: list = get_data(filehash, param, param_range, memory=memory)
 
         # Extract x and y coordinates from filehash_out1
@@ -89,14 +87,40 @@ def plot_data(
 
     plt.legend()
     plt.xlabel(param)
-    plt.ylabel("CPU Time Taken")
+    plt.ylabel("CPU Time Taken (in s)" if not memory else "CPU Memory Used (in MB)")
     plt.title(f"{param} vs {'memory' if memory else 'time'}")
     plt.grid(True)
     plt.savefig(f"images/{param}-{int(memory)}.png")
     plt.show()
 
 
-def main() -> None:
+def plot_bool_data(filehashes: list[str], param: str, memory: bool = False) -> None:
+    results = {"True": [], "False": []}
+
+    for filehash in filehashes:
+        print(f"here: {filehash}")
+        for i in [True, False]:
+            out = cadical_run(filehash=filehash, **({param: i}))[int(memory)]
+            results[str(i)].append((filehash, out))
+
+    x_true, y_true = zip(*results["True"])
+    x_false, y_false = zip(*results["False"])
+
+    plt.figure(figsize=(10, 5))
+    plt.scatter(x_true, y_true, color="blue", label="True")
+    plt.scatter(x_false, y_false, color="red", label="False")
+
+    plt.xlabel("Instance")
+    plt.ylabel("CPU Time Taken (in s)" if not memory else "CPU Memory Used (in MB)")
+    plt.title(f"{param} vs {'memory' if memory else 'time'}")
+    plt.xticks(rotation=45)
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"images/{param}-{int(memory)}.png")
+    plt.show()
+
+
+def calc_non_bool() -> None:
     parameters = {
         "restartint",
         "restartmargin",
@@ -112,10 +136,42 @@ def main() -> None:
             param_range = range(0, int(1e4), 100)
 
         print(f"{param}: MEMORY")
-        plot_data(["31c4aac", "3a81b9d"], param, param_range, memory=True)
+        plot_data(["31c4aac"], param, param_range, memory=True)
+        if param == "restartint":
+            continue
         print(f"{param}: TIME")
         plot_data(["31c4aac", "3a81b9d"], param, param_range, memory=False)
 
 
+def calc_bool() -> None:
+    best = [
+        "9c4892c",
+        "3a81b9d",
+        "31c4aac",
+        "a3eaa99",
+        "977dad9",
+        "f51d394",
+        "cf5f4eb",
+        "33e82a3",
+    ]
+
+    for param in {"restart", "restartreusetrail"}:
+        plot_bool_data(best, param, memory=True)
+        plot_bool_data(best, param, memory=False)
+
+
+def main() -> None:
+    # calc_non_bool()
+    calc_bool()
+
+
+# extra
+def only_restartint():
+    plot_data(
+        ["31c4aac", "3a81b9d"], "restartint", range(0, int(1e6), 1000), memory=False
+    )
+
+
 if __name__ == "__main__":
     main()
+    # only_restartint()
