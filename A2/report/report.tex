@@ -1,15 +1,30 @@
 \documentclass{article}
 \usepackage{graphicx}
-\graphicspath{ {../images/} }
 \usepackage{float}
-\title{CS433 Assignment 2}
-\author{Shaik Awez Mehtab (23b1080)
-        \\ Evuri Mohana Sreedhara Reddy (23b1017)}
+\graphicspath{ {../images/} }
+
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    left=10mm,
+    right=10mm,
+    top=10mm,
+    bottom=10mm
+}
+
+\setlength{\parindent}{0pt}
+
+\pagenumbering{gobble}
+
+\title{CS433 Automated Reasoning \\ Assignment 2}
+\author{\textit{Shaik Awez Mehtab} \\ 23B1080
+        \and
+        \textit{Evuri Mohana Sreedhara Reddy} \\ 23B1017}
 \date{}
 \begin{document}
     \maketitle
     Here we present the plots we have generated and our understanding of why
-    they were so:
+    they were so, as we change the given parameters:
     \section*{\texttt{restartmargin}}
     \begin{figure}[H]
         \centering
@@ -29,7 +44,7 @@
     as \textbf{glucose level}. Glucose level of a learned clause is based on
     how many of its literals appear in recent conflicts. Thus a newly learned
     clause which is getting involved in multiple conflicts has a high glucose
-    level. If the average glucose level gets more than initial glucose
+    level. If the average glucose level gets more than \textbf{initial glucose}
     * \texttt{restartmargin}, then there's a restart. This can be seen in
     \texttt{src/restart.cpp}. Small changes in this don't change timing much.
     But at certain threshold valuees as seen here, restart frequency aligns
@@ -55,11 +70,11 @@
     point, it may start to increase again. \texttt{restartint} controls the
     interval between restarts, and increasing it delays restarts, allowing the
     solver to explore the search space more deeply before resetting. This can
-    be beneficial by reducing unnecessary restarts and improving the solver’s
+    be beneficial by reducing unnecessary restarts and improving the solver's
     progress with learned clauses. However, if the interval becomes too long,
     the solver might get stuck in unproductive areas of the search space,
     leading to longer solving times. So, while increasing \texttt{restartint}
-    generally improves performance, there’s a balance, and beyond a certain
+    generally improves performance, there's a balance, and beyond a certain
     threshold, it might have diminishing returns or even negative effects
 
     \section*{\texttt{reluctant}}
@@ -101,7 +116,7 @@
     \end{figure}
     As we can see from these figures, there are sudden \textbf{drops} in time
     taken at a few discrete values of \texttt{reluctantmax}. This parameter
-    controls the solver’s \textbf{reluctant doubling} restart strategy, where
+    controls the solver's \textbf{reluctant doubling} restart strategy, where
     restart intervals grow progressively longer. Unlike \texttt{restartmargin},
     which reacts to glucose levels, this method follows a structured sequence
     based on an internal counter. The implementation can be found in
@@ -128,10 +143,10 @@
             \includegraphics[width = \linewidth]{restart-1.png}
         \end{minipage}
     \end{figure}
-    From the results, we can see that keeping \texttt{restart} = True is
+    From the results, we can see that keeping \texttt{restart = True} is
     sometimes better, sometimes worse, and in some cases, nearly the same as
-    False. This might be happening because the impact of restarts depends on
-    the problem structure. When restarts help escape difficult search regions,
+    \texttt{False}. This might be happening because the impact of restarts depends
+    on the problem structure. When restarts help escape difficult search regions,
     they improve performance, but if they occur too frequently, they might
     disrupt useful clause learning, leading to slower solving. In cases where
     the search space is naturally well-guided, restarts make little difference,
@@ -151,11 +166,11 @@
             \includegraphics[width = \linewidth]{restartreusetrail-1.png}
         \end{minipage}
     \end{figure}
-    From the results, setting \texttt{restartreusetrail} = True is just as
-    often better as it is worse compared to False. This happens because reusing
-    the trail after a restart can sometimes preserve useful decisions, making
-    solving faster, but other times it keeps bad assignments, leading to more
-    conflicts. If the problem benefits from continuity, it helps, but if a
+    From the results, setting \texttt{restartreusetrail = True} is just as
+    often better as it is worse compared to \texttt{False}. This happens because
+    reusing the trail after a restart can sometimes preserve useful decisions,
+    making solving faster, but other times it keeps bad assignments, leading to
+    more conflicts. If the problem benefits from continuity, it helps, but if a
     clean slate is better, it hurts. Since this entirely depends on the
     problem, neither setting is consistently the best.
 
