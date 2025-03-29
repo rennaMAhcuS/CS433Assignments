@@ -170,7 +170,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-A2/benchmarks/
+A2/benchmarks/*.cnf.xz
 
 # macOS
 .DS_Store
