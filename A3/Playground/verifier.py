@@ -50,18 +50,21 @@ def get_results_1D(n, k):
             colors.append((var - 1) % k + 1)
         return colors
 
-def node_index(i, j):
-    res = 2 * (abs(i) + abs(j)) * (abs(i) + abs(j) - 1)
-    r = abs(i) + abs(j) - 1
-    eta = 0
-    if i >= 0 and j >= 0:
-        eta = j + 1
-    elif i < 0:
-        eta = 2 * r + 1 - j
+def get_ij_from_residual(r, residual):
+    """
+    Basically that eta
+    """
+    if residual <= r:
+        return (r - residual + 1, residual - 1)
+    elif residual > r and residual <= 2 * r:
+        residual -= r
+        return (-residual + 1, r - residual + 1)
+    elif residual > 2 * r and residual <= 3 * r:
+        residual -= 2 * r
+        return (-r + residual - 1, -residual + 1)
     else:
-        eta = 4 * r + 1 + j
-    res += eta
-    return res + 1
+        residual -= 3 * r
+        return (residual - 1, residual - r - 1)
 
 def get_ij(node):
     if node == 1:
@@ -79,22 +82,6 @@ def get_ij(node):
 
     residual = node - 2 * r * (r - 1)
     return get_ij_from_residual(r, residual)
-
-def get_ij_from_residual(r, residual):
-    """
-    Basically that eta
-    """
-    if residual <= r:
-        return (r - residual + 1, residual - 1)
-    elif residual > r and residual <= 2 * r:
-        residual -= r
-        return (-residual + 1, r - residual + 1)
-    elif residual > 2 * r and residual <= 3 * r:
-        residual -= 2 * r
-        return (-r + residual - 1, -residual + 1)
-    else:
-        residual -= 3 * r
-        return (residual - 1, residual - r - 1)
 
 def dist(node1, node2):
     i1, j1 = get_ij(node1)
@@ -132,43 +119,6 @@ def get_cnf2(r, k, c):
     
     return cnf
 
-def plot_colored_grid(data):
-    """
-    data: List of (i, j, c) tuples where (i, j) is grid position in (x, y) format and c is the color ID.
-    """
-    if not data:
-        print("No data to plot!")
-        return
-    
-    # Get coordinate limits
-    min_x = min(i for i, _, _ in data)
-    max_x = max(i for i, _, _ in data)
-    min_y = min(j for _, j, _ in data)
-    max_y = max(j for _, j, _ in data)
-    
-    fig, ax = plt.subplots()
-    
-    # Create color map (each c gets a unique color)
-    unique_colors = list(set(c for _, _, c in data))
-    cmap = plt.get_cmap("tab10", len(unique_colors))
-    
-    # Plot each cell
-    for x, y, c in data:
-        ax.add_patch(plt.Rectangle((x, y), 1, 1, color=cmap(unique_colors.index(c)), ec='black'))
-        ax.text(x + 0.5, y + 0.5, str(c), ha='center', va='center', color='white', fontsize=6, weight='bold')
-    
-    # Set axis limits and properties to match the xy-plane
-    ax.set_xticks(range(min_x, max_x + 2))
-    ax.set_yticks(range(min_y, max_y + 2))
-    ax.set_xlim(min_x, max_x + 1)
-    ax.set_ylim(min_y, max_y + 1)
-    ax.set_aspect('equal')
-    ax.grid(True, which='both', linestyle='-', linewidth=1)
-    plt.xticks(range(min_x, max_x + 2))
-    plt.yticks(range(min_y, max_y + 2))
-    
-    plt.show()
-
 def get_results_2D(r, k, c):
     file = f'Z2_{r}_{k}_{c}'
     cnf = get_cnf2(r, k, c)
@@ -180,6 +130,19 @@ def get_results_2D(r, k, c):
         print('UNSAT')
     else:
         print(result)
+
+    # def node_index(i, j):
+    #     res = 2 * (abs(i) + abs(j)) * (abs(i) + abs(j) - 1)
+    #     r = abs(i) + abs(j) - 1
+    #     eta = 0
+    #     if i >= 0 and j >= 0:
+    #         eta = j + 1
+    #     elif i < 0:
+    #         eta = 2 * r + 1 - j
+    #     else:
+    #         eta = 4 * r + 1 + j
+    #     res += eta
+    #     return res + 1
 
     # def get_node_color(var, k):
     #     var = var - 1
@@ -207,6 +170,43 @@ def get_results_2D(r, k, c):
     #     if dist(1, node_index(i, j)) > r:
     #         continue
     #     data.append((i, j, color))
+
+    # def plot_colored_grid(data):
+    #     """
+    #     data: List of (i, j, c) tuples where (i, j) is grid position in (x, y) format and c is the color ID.
+    #     """
+    #     if not data:
+    #         print("No data to plot!")
+    #         return
+        
+    #     # Get coordinate limits
+    #     min_x = min(i for i, _, _ in data)
+    #     max_x = max(i for i, _, _ in data)
+    #     min_y = min(j for _, j, _ in data)
+    #     max_y = max(j for _, j, _ in data)
+        
+    #     fig, ax = plt.subplots()
+        
+    #     # Create color map (each c gets a unique color)
+    #     unique_colors = list(set(c for _, _, c in data))
+    #     cmap = plt.get_cmap("tab10", len(unique_colors))
+        
+    #     # Plot each cell
+    #     for x, y, c in data:
+    #         ax.add_patch(plt.Rectangle((x, y), 1, 1, color=cmap(unique_colors.index(c)), ec='black'))
+    #         ax.text(x + 0.5, y + 0.5, str(c), ha='center', va='center', color='white', fontsize=6, weight='bold')
+        
+    #     # Set axis limits and properties to match the xy-plane
+    #     ax.set_xticks(range(min_x, max_x + 2))
+    #     ax.set_yticks(range(min_y, max_y + 2))
+    #     ax.set_xlim(min_x, max_x + 1)
+    #     ax.set_ylim(min_y, max_y + 1)
+    #     ax.set_aspect('equal')
+    #     ax.grid(True, which='both', linestyle='-', linewidth=1)
+    #     plt.xticks(range(min_x, max_x + 2))
+    #     plt.yticks(range(min_y, max_y + 2))
+        
+    #     plt.show()
 
     # plot_colored_grid(data)
 
