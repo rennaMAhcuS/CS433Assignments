@@ -131,84 +131,87 @@ def get_results_2D(r, k, c):
     else:
         print(result)
 
-    # def node_index(i, j):
-    #     res = 2 * (abs(i) + abs(j)) * (abs(i) + abs(j) - 1)
-    #     r = abs(i) + abs(j) - 1
-    #     eta = 0
-    #     if i >= 0 and j >= 0:
-    #         eta = j + 1
-    #     elif i < 0:
-    #         eta = 2 * r + 1 - j
-    #     else:
-    #         eta = 4 * r + 1 + j
-    #     res += eta
-    #     return res + 1
+    def node_index(i, j):
+        res = 2 * (abs(i) + abs(j)) * (abs(i) + abs(j) - 1)
+        r = abs(i) + abs(j) - 1
+        eta = 0
+        if i >= 0 and j >= 0:
+            eta = j + 1
+        elif i < 0:
+            eta = 2 * r + 1 - j
+        else:
+            eta = 4 * r + 1 + j
+        res += eta
+        return res + 1
 
-    # def get_node_color(var, k):
-    #     var = var - 1
-    #     node_idx, color = var // k, var % k
-    #     color += 1
-    #     a, b = get_ij(node_idx)
-    #     return (a, b, color)
+    def get_node_color(var, k):
+        var = var - 1
+        node_idx, color = var // k, var % k
+        color += 1
+        a, b = get_ij(node_idx)
+        return (a, b, color)
 
-    # arr = []
-    # for line in result.splitlines():
-    #     if not line.startswith('v'):
-    #         continue
-    #     arr.extend(list(map(int, line.split()[1:])))
+    arr = []
+    for line in result.splitlines():
+        if not line.startswith('v'):
+            continue
+        arr.extend(list(map(int, line.split()[1:])))
 
-    # # Remove the trailing 0 if present
-    # if arr and arr[-1] == 0:
-    #     arr = arr[:-1]
+    # Remove the trailing 0 if present
+    if arr and arr[-1] == 0:
+        arr = arr[:-1]
 
-    # data = []
-    # for elem in arr:
-    #     if elem <= 0:
-    #         continue
-    #     i, j, color = get_node_color(elem, k)
-    #     # Only include nodes within distance r from node 1
-    #     if dist(1, node_index(i, j)) > r:
-    #         continue
-    #     data.append((i, j, color))
+    data = []
+    for elem in arr:
+        if elem <= 0:
+            continue
+        i, j, color = get_node_color(elem, k)
+        # Only include nodes within distance r from node 1
+        if dist(1, node_index(i, j)) > r:
+            continue
+        data.append((i, j, color))
 
-    # def plot_colored_grid(data):
-    #     """
-    #     data: List of (i, j, c) tuples where (i, j) is grid position in (x, y) format and c is the color ID.
-    #     """
-    #     if not data:
-    #         print("No data to plot!")
-    #         return
+    def plot_colored_grid(data):
+        """
+        data: List of (i, j, c) tuples where (i, j) is grid position in (x, y) format and c is the color ID.
+        """
+        if not data:
+            print("No data to plot!")
+            return
         
-    #     # Get coordinate limits
-    #     min_x = min(i for i, _, _ in data)
-    #     max_x = max(i for i, _, _ in data)
-    #     min_y = min(j for _, j, _ in data)
-    #     max_y = max(j for _, j, _ in data)
+        # Get coordinate limits
+        min_x = min(i for i, _, _ in data)
+        max_x = max(i for i, _, _ in data)
+        min_y = min(j for _, j, _ in data)
+        max_y = max(j for _, j, _ in data)
         
-    #     fig, ax = plt.subplots()
+        fig, ax = plt.subplots()
         
-    #     # Create color map (each c gets a unique color)
-    #     unique_colors = list(set(c for _, _, c in data))
-    #     cmap = plt.get_cmap("tab10", len(unique_colors))
+        # Create color map (each c gets a unique color)
+        unique_colors = list(set(c for _, _, c in data))
+        cmap = plt.get_cmap("tab10", len(unique_colors))
         
-    #     # Plot each cell
-    #     for x, y, c in data:
-    #         ax.add_patch(plt.Rectangle((x, y), 1, 1, color=cmap(unique_colors.index(c)), ec='black'))
-    #         ax.text(x + 0.5, y + 0.5, str(c), ha='center', va='center', color='white', fontsize=6, weight='bold')
+        # Plot each cell
+        for x, y, c in data:
+            ax.add_patch(plt.Rectangle((x, y), 1, 1, color=cmap(unique_colors.index(c)), ec='black'))
+            ax.text(x + 0.5, y + 0.5, str(c), ha='center', va='center', color='white', fontsize=6, weight='bold')
         
-    #     # Set axis limits and properties to match the xy-plane
-    #     ax.set_xticks(range(min_x, max_x + 2))
-    #     ax.set_yticks(range(min_y, max_y + 2))
-    #     ax.set_xlim(min_x, max_x + 1)
-    #     ax.set_ylim(min_y, max_y + 1)
-    #     ax.set_aspect('equal')
-    #     ax.grid(True, which='both', linestyle='-', linewidth=1)
-    #     plt.xticks(range(min_x, max_x + 2))
-    #     plt.yticks(range(min_y, max_y + 2))
+        # Set axis limits and properties to match the xy-plane
+        ax.set_xticks(range(min_x, max_x + 2))
+        ax.set_yticks(range(min_y, max_y + 2))
+        ax.set_xlim(min_x, max_x + 1)
+        ax.set_ylim(min_y, max_y + 1)
+        ax.set_aspect('equal')
+        ax.grid(True, which='both', linestyle='-', linewidth=1)
+        plt.xticks(range(min_x, max_x + 2))
+        plt.yticks(range(min_y, max_y + 2))
         
-    #     plt.show()
+        # plt.savefig('plot.png')
+        plt.show()
 
-    # plot_colored_grid(data)
+    plot_colored_grid(data)
 
-r, k, c = 6, 11, 6
+r = int(input("Enter the radius of the l1 circle (r): "))
+k = int(input("Enter the number of colors (k): "))
+c = int(input("Enter the color of (0,0) (c): "))
 cnf = get_results_2D(r, k, c)
