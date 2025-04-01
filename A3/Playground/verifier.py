@@ -145,54 +145,13 @@ def generate_plus_encoding(r, k):
     return cnf
 
 
-def run_plus_encoding(r, k):
+def run_plus_encoding(r, k, plot=False):
     cnf = generate_plus_encoding(r, k)
 
     file = f"Z2_r{r}_k{k}"
 
     def result_plotter(k, result):
-
-        data = []
-
-        # Get coordinate limits
-        min_x = min(i for i, _, _ in data)
-        max_x = max(i for i, _, _ in data)
-        min_y = min(j for _, j, _ in data)
-        max_y = max(j for _, j, _ in data)
-
-        fig, ax = plt.subplots()
-
-        # Create color map (each c gets a unique color)
-        unique_colors = list(set(c for _, _, c in data))
-        cmap = plt.get_cmap("tab10", len(unique_colors))
-
-        # Plot each cell
-        for x, y, c in data:
-            ax.add_patch(
-                plt.Rectangle(
-                    (x, y), 1, 1, color=cmap(unique_colors.index(c)), ec="black"
-                )
-            )
-            ax.text(
-                x + 0.5,
-                y + 0.5,
-                str(c),
-                ha="center",
-                va="center",
-                color="white",
-                fontsize=6,
-                weight="bold",
-            )
-
-        # Set axis limits and properties to match the xy-plane
-        ax.set_xticks(range(min_x, max_x + 2))
-        ax.set_yticks(range(min_y, max_y + 2))
-        ax.set_xlim(min_x, max_x + 1)
-        ax.set_ylim(min_y, max_y + 1)
-        ax.set_aspect("equal")
-        ax.grid(True, which="both", linestyle="-", linewidth=1)
-
-        plt.savefig(f"{file}_plot.png")
+        pass
 
     # Write to DIMACS format
     cnf.to_file(f"{file}.cnf")
@@ -203,16 +162,18 @@ def run_plus_encoding(r, k):
     if kissat_run.returncode == 20:
         print("UNSAT")
     elif kissat_run.returncode == 10:
-        result = [
-            int(val)
-            for line in kissat_run.stdout.splitlines()
-            if line.startswith("v")
-            for val in line.split()
-            if val.lstrip("-").isnumeric()
-        ]
-        if result[-1] == 0:
-            result.pop()
-
+        print("SAT")
+        if plot:
+            result = [
+                int(val)
+                for line in kissat_run.stdout.splitlines()
+                if line.startswith("v")
+                for val in line.split()
+                if val.lstrip("-").isnumeric()
+            ]
+            if result[-1] == 0:
+                result.pop()
+            result_plotter(k, result)
     else:
         print("Some error occured.")
 
