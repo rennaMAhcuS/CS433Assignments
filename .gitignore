@@ -180,4 +180,4 @@ A2/benchmarks/*.cnf.xz
 
 # SAT Files
 *.cnf
-*.drat
+*.drat*
