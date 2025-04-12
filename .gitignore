@@ -177,3 +177,7 @@ A2/benchmarks/*.cnf.xz
 
 # WSL
 *Zone.Identifier
+
+# SAT Files
+*.cnf
+*.drat*
