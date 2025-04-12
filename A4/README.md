@@ -1,5 +1,5 @@
 # Assignment 4
-Due Date: 17th April
+_Due Date: 17th April_
 ## Verifying Neural Network Robustness Using SMT Solvers
 
 ### Objective:
