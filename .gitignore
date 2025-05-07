@@ -184,3 +184,5 @@ A2/benchmarks/*.cnf.xz
 
 # A4 data
 A4/data
+
+*.smt2
