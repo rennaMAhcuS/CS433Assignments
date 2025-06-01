@@ -20,8 +20,8 @@ of members in your group. Only 1 group member should submit the file on Moodle.
 
 Expected usage of the code is as follows:
 
-```
-$ python 22b0967_a1.py input.smt2
+```sh
+python 22b0967_a1.py input.smt2
 ```
 
 ## Input Format
